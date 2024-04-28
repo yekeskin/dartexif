@@ -18,23 +18,22 @@ int _incrementBase(List<int> data, int base) {
 /// Process an image file data.
 /// This is the function that has to deal with all the arbitrary nasty bits
 /// of the EXIF standard.
-Future<Map<String, IfdTag>> readExifFromBytes(List<int> bytes,
+Future<ExifData> readExifFromBytes(List<int> bytes,
     {String? stopTag,
     bool details = true,
     bool strict = false,
     bool debug = false,
     bool truncateTags = true}) async {
   return readExifFromFileReader(FileReader.fromBytes(bytes),
-          stopTag: stopTag,
-          details: details,
-          strict: strict,
-          debug: debug,
-          truncateTags: truncateTags)
-      .tags;
+      stopTag: stopTag,
+      details: details,
+      strict: strict,
+      debug: debug,
+      truncateTags: truncateTags);
 }
 
 /// Streaming version of [readExifFromBytes].
-Future<Map<String, IfdTag>> readExifFromFile(File file,
+Future<ExifData> readExifFromFile(File file,
     {String? stopTag,
     bool details = true,
     bool strict = false,
@@ -49,7 +48,7 @@ Future<Map<String, IfdTag>> readExifFromFile(File file,
       debug: debug,
       truncateTags: truncateTags);
   randomAccessFile.closeSync();
-  return r.tags;
+  return r;
 }
 
 /// Process an image file (expects an open file object).
@@ -119,8 +118,7 @@ ExifData readExifFromFileReader(FileReader f,
     _parseXmpTags(f, hdr);
   }
 
-  return ExifData(
-      hdr.tags.map((key, value) => MapEntry(key, value.tag)), hdr.warnings);
+  return ExifData(hdr);
 }
 
 String _ifdNameOfIndex(int index) {

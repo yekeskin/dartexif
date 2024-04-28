@@ -1,10 +1,18 @@
 import 'dart:typed_data';
 
+import 'package:exif/src/exifheader.dart';
+import 'package:exif/src/encode_exif.dart';
+import 'package:exif/src/field_types.dart';
+
 class IfdTag {
   /// tag ID number
   final int tag;
 
-  final String tagType;
+  final FieldType tagType;
+
+  final String tagName;
+
+  final String ifdName;
 
   /// printable version of data
   final String printable;
@@ -17,6 +25,8 @@ class IfdTag {
     required this.tagType,
     required this.printable,
     required this.values,
+    required this.tagName,
+    required this.ifdName,
   });
 
   @override
@@ -140,10 +150,24 @@ class Ratio {
 }
 
 class ExifData {
-  final Map<String, IfdTag> tags;
-  final List<String> warnings;
+  final ExifHeader? header;
+  final List<String>? _warnings;
 
-  const ExifData(this.tags, this.warnings);
+  Map<String, IfdTag> get tags {
+    return header?.tags.map((key, value) => MapEntry(key, value.tag)) ?? {};
+  }
 
-  ExifData.withWarning(String warning) : this(const {}, [warning]);
+  List<String> get warnings {
+    return header?.warnings ?? _warnings ?? [];
+  }
+
+  Uint8List get raw {
+    return header == null ? Uint8List(0) : encodeExif(header!);
+  }
+
+  ExifData(this.header) : _warnings = [];
+
+  ExifData.withWarning(String warning)
+      : _warnings = [warning],
+        header = null;
 }

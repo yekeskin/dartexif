@@ -1,12 +1,12 @@
 class FieldType {
-  final int _value;
+  final int value;
   final int length;
   final String abbr;
   final String name;
   final bool isValid;
   final bool isSigned;
 
-  const FieldType(this._value, this.length, this.abbr, this.name,
+  const FieldType(this.value, this.length, this.abbr, this.name,
       {this.isValid = true, this.isSigned = false});
 
   factory FieldType.ofValue(int v) {
@@ -17,11 +17,10 @@ class FieldType {
   }
 
   @override
-  bool operator ==(Object other) =>
-      other is FieldType && _value == other._value;
+  bool operator ==(Object other) => other is FieldType && value == other.value;
 
   @override
-  int get hashCode => _value.hashCode;
+  int get hashCode => value.hashCode;
 
   static const proprietary =
       FieldType(0, 0, 'X', 'Proprietary', isValid: false); // no such type

@@ -35,11 +35,15 @@ class IfdTagImpl {
     String printable = '',
     int tag = -1,
     IfdValues values = const IfdNone(),
+    String tagName = "",
+    String ifdName = "",
   }) : tag = IfdTag(
           tag: tag,
-          tagType: fieldType.name,
+          tagType: fieldType,
           printable: printable,
           values: values,
+          tagName: tagName,
+          ifdName: ifdName,
         );
 }
 
@@ -142,12 +146,15 @@ class ExifHeader {
     }
 
     tags['$ifdName $tagName'] = IfdTagImpl(
-        printable: printable.value,
-        tag: entry.tag,
-        fieldType: entry.fieldType,
-        values: values,
-        fieldOffset: entry.fieldOffset,
-        fieldLength: entry.count * entry.fieldType.length);
+      printable: printable.value,
+      tag: entry.tag,
+      fieldType: entry.fieldType,
+      values: values,
+      fieldOffset: entry.fieldOffset,
+      fieldLength: entry.count * entry.fieldType.length,
+      tagName: tagName,
+      ifdName: ifdName,
+    );
 
     // var t = tags[ifd_name + ' ' + tag_name];
   }
